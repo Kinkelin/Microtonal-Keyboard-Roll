@@ -1,0 +1,11 @@
+#This is a microtonal file by Microtonal-Keyboard-Roll in format version 1.0
+#Fri Dec 27 00:09:21 CET 2019
+name=12-TET
+keyNames=C;C\#;D;D\#;E;F;F\#;G;G\#;A;A\#;B
+notesPerBeat=4
+numberOfOctaves=10
+notes=
+topFrequency=16744.032
+bpm=120.0
+beatsPerBar=4
+whiteKeys=101011010101

@@ -1,8 +1,14 @@
 package data;
 
 public class MidiRollKey {
+	
 	private int height;
 	private int time;
+	
+	public MidiRollKey(int height, int time) {
+		this.height = height;
+		this.time = time;
+	}
 	
 	@Override
 	public int hashCode() {
