@@ -2,34 +2,39 @@ package data;
 
 import static data.SerializationConstants.*;
 
+import java.util.Arrays;
 import java.util.Properties;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
+
+import javafx.scene.paint.Color;
 
 public class ToneSystem {
 	private String name;
 	private int tonesPerOctave;
-	private boolean[] whiteKeys;
+	private KeyColor[] keyColors;
 	private String[] toneNames;
 	private int numberOfOctaves;
 	private double topFrequency;
 
-	public ToneSystem(String name, boolean[] whiteKeys, String[] toneNames, int numberOfOctaves, double topFrequency) {
+	public ToneSystem(String name, KeyColor[] keyColors, String[] toneNames, int numberOfOctaves, double topFrequency) {
 		this.name = name;
-		this.tonesPerOctave = whiteKeys.length;
-		this.whiteKeys = whiteKeys;
+		this.tonesPerOctave = keyColors.length;
+		this.keyColors = keyColors;
 		this.toneNames = toneNames;
 		this.numberOfOctaves = numberOfOctaves;
 		this.topFrequency = topFrequency;
 	}
 
 	public ToneSystem(int tonesPerOctave) {
-		this(new boolean[tonesPerOctave]);
+		this(new KeyColor[tonesPerOctave]);
 	}
 
-	public ToneSystem(boolean[] whiteKeys) {
-		this.tonesPerOctave = whiteKeys.length;
+	public ToneSystem(KeyColor[] keyColors) {
+		this.tonesPerOctave = keyColors.length;
 		this.name = String.valueOf(tonesPerOctave) + "-TET";
 		this.numberOfOctaves = 120 / tonesPerOctave;
-		this.whiteKeys = whiteKeys;
+		this.keyColors = keyColors;
 		this.toneNames = new String[tonesPerOctave];
 		for (int i = 0; i < toneNames.length; i++) {
 			toneNames[i] = String.valueOf(i);
@@ -37,7 +42,11 @@ public class ToneSystem {
 		this.topFrequency = 523.251 * Math.pow(2, numberOfOctaves / 2);
 		System.out.println(topFrequency);
 	}
-
+	
+	public ToneSystem(int[] keyColorIds) {
+		this(KeyColor.transform(keyColorIds));
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -54,12 +63,12 @@ public class ToneSystem {
 		this.tonesPerOctave = tonesPerOctave;
 	}
 
-	public boolean[] getWhiteKeys() {
-		return whiteKeys;
+	public KeyColor[] getKeyColors() {
+		return keyColors;
 	}
 
-	public void setWhiteKeys(boolean[] whiteKeys) {
-		this.whiteKeys = whiteKeys;
+	public void setKeyColors(KeyColor[] keyColors) {
+		this.keyColors = keyColors;
 	}
 
 	public String[] getToneNames() {
@@ -86,20 +95,21 @@ public class ToneSystem {
 		this.topFrequency = topFrequency;
 	}
 
-	public String serializeWhiteKeys(boolean[] whiteKeys) {
-		StringBuilder result = new StringBuilder();
-		for (boolean whiteKey : whiteKeys) {
-			result.append(whiteKey ? WHITE_KEY_TRUE : WHITE_KEY_FALSE);
+	public String serializeKeyColors(KeyColor[] keyColors) {
+		StringJoiner result = new StringJoiner(NOTE_DELIMITER);
+		for (KeyColor color : keyColors) {
+			result.add(String.valueOf(color.getId()));
 		}
 		return result.toString();
 	}
 
-	public static boolean[] deserializeWhiteKeys(String data) {
-		boolean[] notes = new boolean[data.length()];
-		for (int i = 0; i < data.length(); i++) {
-			notes[i] = data.charAt(i) == WHITE_KEY_TRUE;
+	public static KeyColor[] deserializeKeyColors(String data) {
+		String[] dataArray = data.split(NOTE_DELIMITER);
+		KeyColor[] keyColors = new KeyColor[dataArray.length];
+		for (int i = 0; i < keyColors.length; i++) {
+			keyColors[i] = KeyColor.getById(Integer.valueOf(dataArray[i]));
 		}
-		return notes;
+		return keyColors;
 	}
 
 	public String serializeToneNames(String[] keyNames) {
@@ -112,7 +122,7 @@ public class ToneSystem {
 
 	public void serialize(Properties properties) {
 		properties.setProperty(KEY_NAME, getName());
-		properties.setProperty(KEY_WHITE_KEYS, serializeWhiteKeys(getWhiteKeys()));
+		properties.setProperty(KEY_COLORS, serializeKeyColors(getKeyColors()));
 		properties.setProperty(KEY_TONE_NAMES, serializeToneNames(getToneNames()));
 		properties.setProperty(KEY_NUMBER_OF_OCTAVES, String.valueOf(getNumberOfOctaves()));
 		properties.setProperty(KEY_TOP_FREQUENCY, String.valueOf(getTopFrequency()));
@@ -120,10 +130,10 @@ public class ToneSystem {
 
 	public static ToneSystem deserialize(Properties properties) {
 		String name = properties.getProperty(KEY_NAME);
-		boolean[] whiteKeys = deserializeWhiteKeys(properties.getProperty(KEY_WHITE_KEYS));
+		KeyColor[] keyColors = deserializeKeyColors(properties.getProperty(KEY_COLORS));
 		String[] toneNames = deserializeToneNames(properties.getProperty(KEY_TONE_NAMES));
 		int numberOfOctaves = Integer.valueOf(properties.getProperty(KEY_NUMBER_OF_OCTAVES));
 		double topFrequency = Double.valueOf(properties.getProperty(KEY_TOP_FREQUENCY));
-		return new ToneSystem(name, whiteKeys, toneNames, numberOfOctaves, topFrequency);
+		return new ToneSystem(name, keyColors, toneNames, numberOfOctaves, topFrequency);
 	}
 }

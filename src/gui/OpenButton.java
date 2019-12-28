@@ -15,6 +15,7 @@ public class OpenButton extends Button {
 	public OpenButton(PianoRollApp app, Stage stage) {
 		super("Open");
 		setOnAction(e -> {
+			fileChooser.setInitialDirectory(new File("resources/files"));
 			File file = fileChooser.showOpenDialog(stage);
 			if (file != null) {
 				try {

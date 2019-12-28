@@ -20,7 +20,7 @@ public class PianoPane extends VBox {
 				double frequency = (double) toneSystem.getTopFrequency() * Math.pow(2.0, -1.0
 						* ((toneSystem.getTonesPerOctave() * i + j + 1.0) / (double) toneSystem.getTonesPerOctave()));
 				int currentKey = toneSystem.getTonesPerOctave() - j - 1;
-				getChildren().add(new TonePane(frequency, toneSystem.getWhiteKeys()[currentKey],
+				getChildren().add(new TonePane(frequency, toneSystem.getKeyColors()[currentKey],
 						toneSystem.getToneNames()[currentKey]));
 			}
 		}

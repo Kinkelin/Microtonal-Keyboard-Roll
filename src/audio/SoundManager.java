@@ -35,8 +35,10 @@ public class SoundManager {
 	public int addClip(String s) {
 		try {
 			System.out.println("SoundManager.addClip(" + s + ")");
-			AudioInputStream audioInputStream = AudioSystem
-					.getAudioInputStream(ClassLoader.getSystemResourceAsStream(s));
+			//AudioInputStream audioInputStream = AudioSystem
+			//		.getAudioInputStream(ClassLoader.getSystemResourceAsStream(s));
+			 AudioInputStream audioInputStream =AudioSystem.getAudioInputStream(
+				      new BufferedInputStream(new FileInputStream(new File("resources/"+s))));
 			AudioFormat af = audioInputStream.getFormat();
 			int size = (int) (af.getFrameSize() * audioInputStream.getFrameLength());
 			byte[] audio = new byte[size];
@@ -51,7 +53,7 @@ public class SoundManager {
 			num++;
 		} catch (Exception e) {
 			System.out.println(e.getClass().getName() + " bei addClip(" + s + ")");
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		return num - 1;
