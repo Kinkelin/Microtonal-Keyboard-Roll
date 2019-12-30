@@ -7,6 +7,8 @@ import java.util.Properties;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
+import audio.Tone;
+import gui.PianoKeyPane;
 import javafx.scene.paint.Color;
 
 public class ToneSystem {
@@ -16,8 +18,9 @@ public class ToneSystem {
 	private String[] toneNames;
 	private int numberOfOctaves;
 	private double topFrequency;
+	private Tone[] tones;
 
-	public ToneSystem(String name, KeyColor[] keyColors, String[] toneNames, int numberOfOctaves, double topFrequency) {
+	private void fill(String name, KeyColor[] keyColors, String[] toneNames, int numberOfOctaves, double topFrequency) {
 		this.name = name;
 		this.tonesPerOctave = keyColors.length;
 		this.keyColors = keyColors;
@@ -26,27 +29,59 @@ public class ToneSystem {
 		this.topFrequency = topFrequency;
 	}
 
-	public ToneSystem(int tonesPerOctave) {
-		this(new KeyColor[tonesPerOctave]);
-	}
-
-	public ToneSystem(KeyColor[] keyColors) {
+	private void fill(KeyColor[] keyColors) {
 		this.tonesPerOctave = keyColors.length;
 		this.name = String.valueOf(tonesPerOctave) + "-TET";
 		this.numberOfOctaves = 120 / tonesPerOctave;
 		this.keyColors = keyColors;
 		this.toneNames = new String[tonesPerOctave];
 		for (int i = 0; i < toneNames.length; i++) {
-			toneNames[i] = String.valueOf(i);
+			toneNames[i] = "#" + String.valueOf(i + 1);
 		}
 		this.topFrequency = 523.251 * Math.pow(2, numberOfOctaves / 2);
-		System.out.println(topFrequency);
 	}
-	
+
+	public Tone[] getTones(BeatSystem beatSystem) {
+		if (tones == null) {
+			double duration = beatSystem != null
+					? (60.0 / beatSystem.getBeatsPerMinute()) / beatSystem.getNumberOfUnitsPerBeat() : 1;
+			tones = new Tone[numberOfOctaves * tonesPerOctave];
+			int toneIndex = 0;
+			for (int i = 0; i < numberOfOctaves; i++) {
+				for (int j = 0; j < tonesPerOctave; j++) {
+					double frequency = (double) topFrequency
+							* Math.pow(2.0, -1.0 * ((tonesPerOctave * i + j + 1.0) / (double) tonesPerOctave));
+					int currentKey = tonesPerOctave - j - 1;
+					tones[toneIndex] = new Tone(frequency, toneNames[currentKey], i, keyColors[currentKey], duration);
+					toneIndex++;
+				}
+			}
+		}
+		return tones;
+	}
+
+	public ToneSystem(String name, KeyColor[] keyColors, String[] toneNames, int numberOfOctaves, double topFrequency) {
+		fill(name, keyColors, toneNames, numberOfOctaves, topFrequency);
+	}
+
+	public ToneSystem(int tonesPerOctave) {
+		KeyColor[] keyColors = new KeyColor[tonesPerOctave];
+		Arrays.fill(keyColors, KeyColor.WHITE);
+		fill(keyColors);
+	}
+
+	public ToneSystem(KeyColor[] keyColors) {
+		fill(keyColors);
+	}
+
 	public ToneSystem(int[] keyColorIds) {
-		this(KeyColor.transform(keyColorIds));
+		KeyColor[] keyColors = new KeyColor[keyColorIds.length];
+		for (int i = 0; i < keyColors.length; i++) {
+			keyColors[i] = KeyColor.getById(keyColorIds[i]);
+		}
+		fill(keyColors);
 	}
-	
+
 	public String getName() {
 		return name;
 	}

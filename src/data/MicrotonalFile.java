@@ -18,13 +18,15 @@ public class MicrotonalFile {
 	private ToneSystem toneSystem;
 	private BeatSystem beatSystem;
 	private Map<MidiRollKey, Integer> notes;
+	private int length;
 
 	public MicrotonalFile(String filePath, ToneSystem toneSystem, BeatSystem beatSystem,
-			Map<MidiRollKey, Integer> notes) {
+			Map<MidiRollKey, Integer> notes, int length) {
 		this.filePath = filePath;
 		this.toneSystem = toneSystem;
 		this.beatSystem = beatSystem;
 		this.notes = notes;
+		this.length = length;
 	}
 
 	public String serializeNotes(Map<MidiRollKey, Integer> notes) {
@@ -55,6 +57,8 @@ public class MicrotonalFile {
 			toneSystem.serialize(properties);
 			beatSystem.serialize(properties);
 			properties.setProperty(KEY_NOTES, serializeNotes(notes));
+			properties.setProperty(KEY_LENGTH, String.valueOf(length));
+			
 			properties.store(output, MICROTONAL_FILE_COMMENT);
 		} catch (IOException io) {
 			io.printStackTrace();
@@ -68,7 +72,8 @@ public class MicrotonalFile {
 			ToneSystem toneSystem = ToneSystem.deserialize(properties);
 			BeatSystem beatSystem = BeatSystem.deserialize(properties);
 			Map<MidiRollKey, Integer> notes = deserializeNotes(properties.getProperty(KEY_NOTES));
-			return new MicrotonalFile(filePath, toneSystem, beatSystem, notes);
+			int length = Integer.valueOf(properties.getProperty(KEY_LENGTH));
+			return new MicrotonalFile(filePath, toneSystem, beatSystem, notes, length);
 		}
 	}
 
@@ -78,14 +83,6 @@ public class MicrotonalFile {
 
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
-	}
-
-	public ToneSystem getTonesystem() {
-		return toneSystem;
-	}
-
-	public void setTonesystem(ToneSystem tonesystem) {
-		this.toneSystem = tonesystem;
 	}
 
 	public BeatSystem getBeatSystem() {
@@ -102,5 +99,21 @@ public class MicrotonalFile {
 
 	public void setNotes(Map<MidiRollKey, Integer> notes) {
 		this.notes = notes;
+	}
+
+	public ToneSystem getToneSystem() {
+		return toneSystem;
+	}
+
+	public void setToneSystem(ToneSystem toneSystem) {
+		this.toneSystem = toneSystem;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
 	}
 }

@@ -48,12 +48,4 @@ public enum KeyColor {
 		}
 		return null;
 	}
-	
-	public static KeyColor[] transform(int[] ids) {
-		KeyColor[] keyColors = new KeyColor[ids.length];
-		for (int i = 0; i < keyColors.length; i++) {
-			keyColors[i] = getById(ids[i]);
-		}
-		return keyColors;
-	}
 }

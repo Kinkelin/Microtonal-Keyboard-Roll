@@ -16,4 +16,5 @@ public class SerializationConstants {
 	public static final String KEY_UNITS_PER_BEAT = "notesPerBeat";
 	public static final String KEY_BEATS_PER_BAR = "beatsPerBar";
 	public static final String KEY_BPM = "bpm";
+	public static final String KEY_LENGTH = "length";
 }

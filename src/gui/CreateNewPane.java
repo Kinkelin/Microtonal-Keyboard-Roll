@@ -28,6 +28,8 @@ public class CreateNewPane extends VBox {
 	private Button okButton;
 	private Text bpmLabel;
 	private TextField bpm;
+	private Text lengthLabel;
+	private TextField length;
 
 	public CreateNewPane(PianoRollApp pianoRollApp, Stage stage) {
 
@@ -50,6 +52,9 @@ public class CreateNewPane extends VBox {
 		bpmLabel = new Text("Beats per minute");
 		bpm = new TextField("120");
 
+		lengthLabel = new Text("Length (in bars)");
+		length = new TextField("16");
+
 		backButton = new Button("Back");
 		backButton.setOnAction(e -> pianoRollApp.openStart());
 
@@ -60,14 +65,15 @@ public class CreateNewPane extends VBox {
 				ToneSystem toneSystem = ToneSystemFile.load(toneSystemFilePath.getText()).getToneSystem();
 				BeatSystem beatSystem = new BeatSystem(Integer.valueOf(unitsPerBeat.getText()),
 						Integer.valueOf(beatsPerBar.getText()), Integer.valueOf(bpm.getText()));
-				pianoRollApp.openMain(new MicrotonalFile(null, toneSystem, beatSystem, new HashMap<>()));
+				int lengthValue = Integer.valueOf(length.getText());
+				pianoRollApp.openMain(new MicrotonalFile(null, toneSystem, beatSystem, new HashMap<>(), lengthValue));
 			} catch (NumberFormatException | IOException e1) {
 				e1.printStackTrace();
 			}
 		});
 
 		getChildren().addAll(toneSystemChooser, toneSystemFilePath, unitsPerBeatLabel, unitsPerBeat, beatsPerBarLabel,
-				beatsPerBar, bpmLabel, bpm, backButton, okButton);
+				beatsPerBar, bpmLabel, bpm, lengthLabel, length, backButton, okButton);
 
 	}
 

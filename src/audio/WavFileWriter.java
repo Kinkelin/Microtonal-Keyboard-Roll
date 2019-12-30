@@ -25,11 +25,11 @@ public class WavFileWriter
     private int sRate = 44100;
     private int bitDepth = 16;
     private int nChannels = 1;
-    private int dur;
+    private double dur;
 
     private float changeRate;
 
-    public void writeWavFile(float frequency, int duration, String name) {
+    public void writeWavFile(float frequency, double duration, String name) {
         freq = frequency;
         changeRate = (float)((2.0 * Math.PI * freq) / sRate);
 

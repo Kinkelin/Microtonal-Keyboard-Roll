@@ -18,7 +18,7 @@ public class MainPane extends VBox {
 		workingArea.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
 		workingArea.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 		HBox content = new HBox();
-		content.getChildren().addAll(new PianoPane(microtonalFile.getTonesystem()), new SheetPane());
+		content.getChildren().addAll(new PianoPane(microtonalFile), new SheetPane(microtonalFile));
 		
 		workingArea.setContent(content);
 		getChildren().addAll(menuBand, workingArea);
