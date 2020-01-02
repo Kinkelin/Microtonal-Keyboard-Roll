@@ -1,7 +1,5 @@
 package audio;
 
-import javax.media.j3d.Sound;
-
 import data.KeyColor;
 
 public class Tone {
