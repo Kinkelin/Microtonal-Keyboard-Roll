@@ -21,7 +21,7 @@ public class MenuBand extends HBox {
 
 		Button saveButton = new Button("Save");
 		saveButton.setOnAction(e -> {
-			fileChooser.setInitialDirectory(new File("resources//files"));
+			fileChooser.setInitialDirectory(new File(String.join(File.separator, "resources", "files")));
 			fileChooser.getExtensionFilters()
 					.add(new FileChooser.ExtensionFilter("Microtonal files (*.microtonal)", "*.microtonal"));
 			File file = fileChooser.showSaveDialog(stage);

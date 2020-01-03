@@ -14,7 +14,7 @@ public class PianoPane extends VBox {
 	public PianoPane(MicrotonalFile microtonalFile) {
 		ToneSystem toneSystem = microtonalFile.getToneSystem();
 		BeatSystem beatSystem = microtonalFile.getBeatSystem();
-		for (File file : new File("resources/audio/temp").listFiles()) {
+		for (File file : new File(String.join(File.separator, "resources", "audio", "temp")).listFiles()) {
 			if (!file.isDirectory()) {
 				file.delete();
 			}

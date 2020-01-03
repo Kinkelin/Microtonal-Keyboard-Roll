@@ -36,7 +36,7 @@ public class CreateNewPane extends VBox {
 		toneSystemFilePath = new TextField();
 		toneSystemChooser = new Button("Choose tone system");
 		toneSystemChooser.setOnAction(e -> {
-			fileChooser.setInitialDirectory(new File("resources//toneSystems"));
+			fileChooser.setInitialDirectory(new File(String.join(File.separator, "resources", "toneSystems")));
 			File file = fileChooser.showOpenDialog(stage);
 			if (file != null) {
 				toneSystemFilePath.setText(file.getAbsolutePath());
