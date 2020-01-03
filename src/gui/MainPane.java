@@ -11,6 +11,8 @@ public class MainPane extends VBox {
 
 	private MicrotonalFile microtonalFile;
 
+	public static final int CELL_SIZE = 24;
+
 	public MainPane(PianoRollApp app, Stage stage, MicrotonalFile microtonalFile) {
 		MenuBand menuBand = new MenuBand(app, stage, this);
 		setMicrotonalFile(microtonalFile);
