@@ -18,7 +18,7 @@ public class Tone {
 		
 		this.wavFileName = "audio/temp/" + getFormattedFrequency() + ".wav";
 		//WavFileWriter.SINGLETON.writeWavFile((float) frequency, defaultDuration, wavFileName);
-		//SoundManager.SINGLETON.addClip(wavFileName);
+		SoundManager.SINGLETON.addClip(wavFileName);
 	}
 	
 	public String getDisplayName() {
@@ -30,7 +30,7 @@ public class Tone {
 	}
 	
 	public void play(double duration) {
-		//SoundManager.SINGLETON.playSound(wavFileName);
+		SoundManager.SINGLETON.playSound(wavFileName);
 	}
 	
 	public double getFrequency() {
