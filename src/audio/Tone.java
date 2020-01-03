@@ -17,7 +17,7 @@ public class Tone {
 		this.keyColor = keyColor;	
 		
 		this.wavFileName = "audio/temp/" + getFormattedFrequency() + ".wav";
-		WavFileWriter.SINGLETON.writeWavFile((float) frequency, defaultDuration, wavFileName);
+		//WavFileWriter.SINGLETON.writeWavFile((float) frequency, defaultDuration, wavFileName);
 		SoundManager.SINGLETON.addClip(wavFileName);
 	}
 	

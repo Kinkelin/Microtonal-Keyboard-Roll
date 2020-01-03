@@ -171,4 +171,34 @@ public class ToneSystem {
 		double topFrequency = Double.valueOf(properties.getProperty(KEY_TOP_FREQUENCY));
 		return new ToneSystem(name, keyColors, toneNames, numberOfOctaves, topFrequency);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + numberOfOctaves;
+		result = prime * result + tonesPerOctave;
+		long temp;
+		temp = Double.doubleToLongBits(topFrequency);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ToneSystem other = (ToneSystem) obj;
+		if (numberOfOctaves != other.numberOfOctaves)
+			return false;
+		if (tonesPerOctave != other.tonesPerOctave)
+			return false;
+		if (Double.doubleToLongBits(topFrequency) != Double.doubleToLongBits(other.topFrequency))
+			return false;
+		return true;
+	}
 }

@@ -34,6 +34,10 @@ public class BeatSystem {
 		this.beatsPerMinute = beatsPerMinute;
 	}
 	
+	public double getUnitDurationInSeconds() {
+		return 60.0 / (beatsPerMinute * numberOfUnitsPerBeat);
+	}
+	
 	public void serialize(Properties properties) {
 		properties.setProperty(KEY_UNITS_PER_BEAT, String.valueOf(getNumberOfUnitsPerBeat()));
 		properties.setProperty(KEY_BEATS_PER_BAR, String.valueOf(getNumberOfBeatsPerBar()));
