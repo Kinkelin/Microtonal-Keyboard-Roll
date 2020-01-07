@@ -62,7 +62,7 @@ public class CreateNewPane extends VBox {
 		okButton.setOnAction(e -> {
 			try {
 
-				ToneSystem toneSystem = ToneSystemFile.load(toneSystemFilePath.getText()).getToneSystem();
+				ToneSystem toneSystem = ToneSystemFile.loadByFilePath(toneSystemFilePath.getText()).getToneSystem();
 				BeatSystem beatSystem = new BeatSystem(Integer.valueOf(unitsPerBeat.getText()),
 						Integer.valueOf(beatsPerBar.getText()), Integer.valueOf(bpm.getText()));
 				int lengthValue = Integer.valueOf(length.getText());

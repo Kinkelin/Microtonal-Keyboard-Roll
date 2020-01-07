@@ -45,8 +45,7 @@ public class ResourceCreator {
 	}
 
 	private static void saveAsToneSystemFile(ToneSystem preset) {
-		String presetFilePath = String.join(File.separator, "resources", "toneSystems", "presets",
-				preset.getName() + ".tonesystem");
+		String presetFilePath = ToneSystemFile.getFilePath(preset.getName());
 		new ToneSystemFile(presetFilePath, preset).save();
 	}
 

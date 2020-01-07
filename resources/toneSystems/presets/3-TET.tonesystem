@@ -1,7 +1,0 @@
-#This is a tone system file by Microtonal-Keyboard-Roll in format version 1.0
-#Sat Dec 28 20:56:13 CET 2019
-topFrequency=5.48668440576E8
-numberOfOctaves=40
-name=3-TET
-keyNames=\#1;\#2;\#3
-keyColors=1;1;1

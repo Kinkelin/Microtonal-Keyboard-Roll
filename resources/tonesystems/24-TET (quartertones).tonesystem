@@ -1,0 +1,7 @@
+#This is a tone system file by Microtonal-Keyboard-Roll in format version 1.0
+#Mon Jan 06 16:19:30 CET 2020
+topFrequency=2093.004
+numberOfOctaves=5
+name=24-TET (quartertones)
+keyNames=C;C1/4;C\#;C3/4;D;D1/4;D\#;D3/4;E;E1/4;F;F1/4;F\#;F3/4;G;G1/4;G\#;G3/4;A;A1/4;A\#;A3/4;B;B1/4
+keyColors=1;2;0;2;1;2;0;2;1;2;1;2;0;2;1;2;0;2;1;2;0;2;1;2

@@ -10,15 +10,20 @@ public class Tone {
 	private KeyColor keyColor;
 	private String wavFileName;
 	
+	public String getWavFileName() {
+		return wavFileName;
+	}
+
+	public void setWavFileName(String wavFileName) {
+		this.wavFileName = wavFileName;
+		SoundManager.SINGLETON.addClip(wavFileName);
+	}
+
 	public Tone(double frequency, String name, int octave, KeyColor keyColor, double defaultDuration) {
 		this.frequency = frequency;
 		this.name = name;
 		this.octave = octave;
 		this.keyColor = keyColor;	
-		
-		this.wavFileName = "audio/temp/" + getFormattedFrequency() + ".wav";
-		//WavFileWriter.SINGLETON.writeWavFile((float) frequency, defaultDuration, wavFileName);
-		SoundManager.SINGLETON.addClip(wavFileName);
 	}
 	
 	public String getDisplayName() {

@@ -1,69 +1,55 @@
 package test;
 
-import audio.Tone;
-import data.BeatSystem;
-import data.ToneSystem;
 import javafx.application.Application;
-import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-public class GUITest extends Application {
+public class GUITest  extends Application {
 
-	@Override
-	public void start(Stage stage) {
-		ScrollPane pane = new ScrollPane();
-		final Scene scene = new Scene(pane, 300, 250);
-		Pane box = new Pane();
+final Float[] values = new Float[] {-1.0f, 0f, 0.6f, 1.0f};
+final Label [] labels = new Label[values.length];
+final ProgressBar[] pbs = new ProgressBar[values.length];
+final ProgressIndicator[] pins = new ProgressIndicator[values.length];
+final HBox hbs [] = new HBox [values.length];
 
-		int cellSize = 24;
-		int unitsPerBar = 16;
-		int height = 120 * cellSize;
-		int width = unitsPerBar * 16 * cellSize;
-
-		box.getChildren().add(new Rectangle(width, height, Color.WHITE));
-
-		for (int bar = 0; bar < 16; bar++) {
-			for (int beat = 0; beat < 4; beat++) {
-				for (int unit = 0; unit < 4; unit++) {
-					int x = (bar * unitsPerBar + beat * 4 + unit) * cellSize;
-					Line line = new Line(x, 0, x, height);
-					line.setStroke(unit == 0 ? Color.BLACK : Color.DARKGREY);
-					line.setStrokeWidth(unit == 0 ? beat == 0 ? 3 : 2 : 1);
-					box.getChildren().add(line);
-				}
-			}
-		}
-		for (int i = 0; i < 120; i++) {
-			int y = i * cellSize;
-			Line line = new Line(0, y, width, y);
-			line.setStroke(Color.DARKGREY);
-			box.getChildren().add(line);
-		}
-
-		box.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				System.out.println("Mouse click position: " + event.getX() + " | " + event.getY());
-				System.out.println("bar: " + (event.getX() / (cellSize  * unitsPerBar)));
-				System.out.println("beat: " + ((event.getX() / (4*cellSize)) % 4));
-				System.out.println("unit: " + ((event.getX() /cellSize)% 4));
-			}
-		});
-
-		pane.setContent(box);
-		stage.setScene(scene);
-		stage.show();
-	}
-
-	public static void main(String[] args) {
-		launch(args);
-	}
+    @Override
+    public void start(Stage stage) {
+        Group root = new Group();
+        Scene scene = new Scene(root, 300, 150);
+        scene.getStylesheets().add("progresssample/Style.css");
+        stage.setScene(scene);
+        stage.setTitle("Progress Controls");
+ 
+ 
+        for (int i = 0; i < values.length; i++) {
+            final Label label = labels[i] = new Label();
+            label.setText("progress:" + values[i]);
+ 
+            final ProgressBar pb = pbs[i] = new ProgressBar();
+            pb.setProgress(values[i]);
+ 
+            final ProgressIndicator pin = pins[i] = new ProgressIndicator();
+            pin.setProgress(values[i]);
+            final HBox hb = hbs[i] = new HBox();
+            hb.setSpacing(5);
+            hb.setAlignment(Pos.CENTER);
+            hb.getChildren().addAll(label, pb, pin);
+        }
+ 
+        final VBox vb = new VBox();
+        vb.setSpacing(5);
+        vb.getChildren().addAll(hbs);
+        scene.setRoot(vb);
+        stage.show();
+    }
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
