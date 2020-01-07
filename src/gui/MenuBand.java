@@ -2,12 +2,10 @@ package gui;
 
 import java.io.File;
 
+import audio.AudioLoader;
 import audio.FilePlayer;
 import data.MicrotonalFile;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -18,7 +16,7 @@ public class MenuBand extends HBox {
 	public MenuBand(PianoRollApp app, Stage stage, MainPane mainPane) {
 		MicrotonalFile microtonalFile = mainPane.getMicrotonalFile();
 		Button playButton = new Button("Play");
-		playButton.setOnAction(e -> new FilePlayer(microtonalFile).start());
+		playButton.setOnAction(e -> new AudioLoader(microtonalFile, new FilePlayer(microtonalFile)));
 
 		Button infoButton = new Button("Info");
 		infoButton.setOnAction(e -> new AboutInformation().showAndWait());

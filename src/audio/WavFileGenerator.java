@@ -15,7 +15,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.concurrent.Task;
 
 public class WavFileGenerator extends Thread {
 
@@ -28,6 +27,7 @@ public class WavFileGenerator extends Thread {
 	private BeatSystem beatSystem;
 	private Tone[] tones;
 	private Map<MidiRollKey, Integer> notes;
+	private Thread successor;
 
 	private IntegerProperty progress = new SimpleIntegerProperty(0);
 	private int numberOfAudioFiles;
@@ -44,6 +44,10 @@ public class WavFileGenerator extends Thread {
 	public int getNumberOfAudioFiles() {
 		return numberOfAudioFiles;
 	}
+	
+	public void setSuccessor(Thread successor) {
+		this.successor = successor;
+	}
 
 	public WavFileGenerator(MicrotonalFile microtonalFile) {
 		toneSystem = microtonalFile.getToneSystem();
@@ -58,6 +62,9 @@ public class WavFileGenerator extends Thread {
 
 	@Override
 	public void run() {
+		finished.set(false);
+		progress.set(0);
+		numberOfAudioFiles = tones.length + notes.size();
 		try {
 			prepareDirectory();
 			createDefaultWavFiles();
@@ -66,6 +73,9 @@ public class WavFileGenerator extends Thread {
 			e.printStackTrace();
 		}
 		finished.set(true);
+		if (successor != null) {
+			successor.start();
+		}
 	}
 
 	/**
@@ -106,7 +116,7 @@ public class WavFileGenerator extends Thread {
 				WavFileWriter.SINGLETON.writeWavFile((float) tone.getFrequency(), beatSystem.getUnitDurationInSeconds(),
 						fileName);
 			}
-			tone.setWavFileName(fileName);
+			tone.addWavFile(1, fileName);
 			progress.set(progress.get() + 1);
 		}
 	}
@@ -125,6 +135,7 @@ public class WavFileGenerator extends Thread {
 				WavFileWriter.SINGLETON.writeWavFile((float) tone.getFrequency(),
 						note.getValue() * beatSystem.getUnitDurationInSeconds(), fileName);
 			}
+			tone.addWavFile(note.getValue(), fileName);
 			progress.set(progress.get() + 1);
 		}
 	}

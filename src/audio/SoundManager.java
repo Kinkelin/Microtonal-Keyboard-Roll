@@ -33,29 +33,30 @@ public class SoundManager {
 	}
 
 	public int addClip(String s) {
-		try {
-			System.out.println("SoundManager.addClip(" + s + ")");
-			// AudioInputStream audioInputStream = AudioSystem
-			// .getAudioInputStream(ClassLoader.getSystemResourceAsStream(s));
-			AudioInputStream audioInputStream = AudioSystem
-					.getAudioInputStream(new BufferedInputStream(new FileInputStream(s)));
-			AudioFormat af = audioInputStream.getFormat();
-			int size = (int) (af.getFrameSize() * audioInputStream.getFrameLength());
-			byte[] audio = new byte[size];
-			DataLine.Info info = new DataLine.Info(Clip.class, af, size);
-			audioInputStream.read(audio, 0, size);
+		if (!clips.containsKey(s)) {
+			try {
+				System.out.println("SoundManager.addClip(" + s + ")");
+				// AudioInputStream audioInputStream = AudioSystem
+				// .getAudioInputStream(ClassLoader.getSystemResourceAsStream(s));
+				AudioInputStream audioInputStream = AudioSystem
+						.getAudioInputStream(new BufferedInputStream(new FileInputStream(s)));
+				AudioFormat af = audioInputStream.getFormat();
+				int size = (int) (af.getFrameSize() * audioInputStream.getFrameLength());
+				byte[] audio = new byte[size];
+				DataLine.Info info = new DataLine.Info(Clip.class, af, size);
+				audioInputStream.read(audio, 0, size);
 
-			afs.add(af);
-			sizes.add(new Integer(size));
-			infos.add(info);
-			audios.add(audio);
-			clips.put(s, num);
-			num++;
-		} catch (Exception e) {
-			System.out.println(e.getClass().getName() + " bei addClip(" + s + ")");
-			e.printStackTrace();
+				afs.add(af);
+				sizes.add(new Integer(size));
+				infos.add(info);
+				audios.add(audio);
+				clips.put(s, num);
+				num++;
+			} catch (Exception e) {
+				System.out.println(e.getClass().getName() + " bei addClip(" + s + ")");
+				e.printStackTrace();
+			}
 		}
-
 		return num - 1;
 	}
 

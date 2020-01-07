@@ -1,25 +1,33 @@
 package gui;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import audio.Tone;
 import data.BeatSystem;
 import data.MicrotonalFile;
 import data.MidiRollKey;
 import data.ToneSystem;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 public class SheetPane extends Pane {
-	
+
+	private boolean clickStarted = false;
+	private double startX;
+	private double startY;
+	private MicrotonalFile microtonalFile;
+
 	public SheetPane(MicrotonalFile microtonalFile) {
+		this.microtonalFile = microtonalFile;
 		ToneSystem toneSystem = microtonalFile.getToneSystem();
 		BeatSystem beatSystem = microtonalFile.getBeatSystem();
 		Tone[] tones = toneSystem.getTones(beatSystem);
@@ -49,37 +57,72 @@ public class SheetPane extends Pane {
 		}
 
 		Map<MidiRollKey, ToneRect> toneRects = new HashMap<>();
-		
+
 		for (MidiRollKey key : microtonalFile.getNotes().keySet()) {
 			ToneRect newTone = new ToneRect(key.getHeight(), key.getTime(), 1);
 			getChildren().add(newTone);
 			toneRects.put(key, newTone);
 		}
-		
-		setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+		setOnMousePressed(e -> {
+			clickStarted = true;
+			startX = e.getX();
+			startY = e.getY();
+		});
+		setOnMouseReleased(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-//				System.out.println("Mouse click position: " + event.getX() + " | " + event.getY());
-//				System.out.println("bar: " + (event.getX() / (MainPane.CELL_SIZE * unitsPerBar)));
-//				System.out.println("beat: " + ((event.getX() / (MainPane.CELL_SIZE * beatSystem.getNumberOfUnitsPerBeat()))
-//						% beatSystem.getNumberOfBeatsPerBar()));
-//				System.out.println("unit: " + ((event.getX() / MainPane.CELL_SIZE) % beatSystem.getNumberOfUnitsPerBeat()));
-				int height = (int) Math.floor(event.getY() / MainPane.CELL_SIZE);
-				int time = (int) Math.floor(event.getX() / MainPane.CELL_SIZE);
-				MidiRollKey key = new MidiRollKey(height, time);
-//				System.out.println("height: " + height + " time: " + time);
-				if (toneRects.containsKey(key)) {
-					getChildren().remove(toneRects.get(key));
-					toneRects.remove(key);
-					microtonalFile.getNotes().remove(key);
-				} else {
-					ToneRect newTone = new ToneRect(height, time, 1);
-					getChildren().add(newTone);
-					toneRects.put(key, newTone);
-					microtonalFile.getNotes().put(key, 1);
+				if (clickStarted) {
+					int height = getHeightFromY(startY);
+					int startTime = getTimeFromX(startX);
+					int endTime = getTimeFromX(event.getX());
+					int duration = endTime - startTime + 1;
+					if (duration > 0) {
+						if (spaceBlocked(height, startTime, endTime)) {
+							List<MidiRollKey> keysToRemove = new LinkedList<>();
+							for (MidiRollKey key : microtonalFile.getNotes().keySet()) {
+								if (spaceBlocked(key, height, startTime, endTime)) {
+									getChildren().remove(toneRects.get(key));
+									toneRects.remove(key);
+									keysToRemove.add(key);
+								}
+							}
+							keysToRemove.forEach(k -> microtonalFile.getNotes().remove(k));
+						} else {
+							MidiRollKey key = new MidiRollKey(height, startTime);
+							ToneRect newTone = new ToneRect(height, startTime, duration);
+							getChildren().add(newTone);
+							toneRects.put(key, newTone);
+							microtonalFile.getNotes().put(key, duration);
+						}
+					}
+					clickStarted = false;
+					System.out.println(String.format("onMouseReleased x=%s y=%s", event.getX(), event.getY()));
 				}
 			}
 		});
+
 	}
 
+	private boolean spaceBlocked(int height, int startTime, int endTime) {
+		for (MidiRollKey key : microtonalFile.getNotes().keySet()) {
+			if (spaceBlocked(key, height, startTime, endTime)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean spaceBlocked(MidiRollKey key, int height, int startTime, int endTime) {
+		return height == key.getHeight() && key.getTime() <= endTime
+				&& key.getTime() + microtonalFile.getNotes().get(key) >= startTime;
+	}
+
+	private int getHeightFromY(double y) {
+		return (int) Math.floor(y / MainPane.CELL_SIZE);
+	}
+
+	private int getTimeFromX(double x) {
+		return (int) Math.floor(x / MainPane.CELL_SIZE);
+	}
 }

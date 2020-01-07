@@ -19,7 +19,7 @@ public class PianoKeyPane extends StackPane {
 		Text text = new Text(tone.getDisplayName());
 		text.setFill(keyColor.getTextColor());
 		getChildren().addAll(rect, text);
-		setOnMouseClicked(e -> tone.play(-1));
+		setOnMouseClicked(e -> tone.play(1));
 
 	}
 
