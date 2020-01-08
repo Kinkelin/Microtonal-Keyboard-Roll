@@ -1,6 +1,8 @@
 package gui;
 
+import audio.WavFileGenerator;
 import data.MicrotonalFile;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Alert;
@@ -25,6 +27,16 @@ public class LoadingScreen extends Alert {
 		getDialogPane().setContent(content);
 	}
 
+	public void bindGenerator(WavFileGenerator generator) {
+		if (!generator.finishedProperty().get()) {
+			progressProperty().bind(generator.progressProperty().divide((double) generator.getNumberOfAudioFiles()));
+			generator.finishedProperty().addListener((observ, old, neww) -> Platform.runLater(() -> postFinish()));
+			String format = "%s/" + generator.getNumberOfAudioFiles();
+			textProperty().bind(generator.progressProperty().asString(format));
+			show();
+		}
+	}
+
 	public void postFinish() {
 		textProperty().unbind();
 		progressProperty().unbind();
@@ -32,11 +44,11 @@ public class LoadingScreen extends Alert {
 		Button closeButton = (Button) getDialogPane().lookupButton(ButtonType.CLOSE);
 		closeButton.fire();
 	}
-	
+
 	public StringProperty textProperty() {
 		return text.textProperty();
 	}
-	
+
 	public DoubleProperty progressProperty() {
 		return progressBar.progressProperty();
 	}

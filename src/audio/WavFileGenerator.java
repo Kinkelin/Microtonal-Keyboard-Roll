@@ -3,6 +3,8 @@ package audio;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -27,16 +29,16 @@ public class WavFileGenerator extends Thread {
 	private BeatSystem beatSystem;
 	private Tone[] tones;
 	private Map<MidiRollKey, Integer> notes;
-	private Thread successor;
+	private List<Runnable> successors = new LinkedList<>();
 
 	private IntegerProperty progress = new SimpleIntegerProperty(0);
 	private int numberOfAudioFiles;
 	private BooleanProperty finished = new SimpleBooleanProperty(false);
-	
+
 	public IntegerProperty progressProperty() {
 		return progress;
 	}
-	
+
 	public BooleanProperty finishedProperty() {
 		return finished;
 	}
@@ -44,9 +46,9 @@ public class WavFileGenerator extends Thread {
 	public int getNumberOfAudioFiles() {
 		return numberOfAudioFiles;
 	}
-	
-	public void setSuccessor(Thread successor) {
-		this.successor = successor;
+
+	public void addSuccessor(Runnable successor) {
+		successors.add(successor);
 	}
 
 	public WavFileGenerator(MicrotonalFile microtonalFile) {
@@ -73,9 +75,10 @@ public class WavFileGenerator extends Thread {
 			e.printStackTrace();
 		}
 		finished.set(true);
-		if (successor != null) {
-			successor.start();
+		for (Runnable successor : successors) {
+			successor.run();
 		}
+
 	}
 
 	/**

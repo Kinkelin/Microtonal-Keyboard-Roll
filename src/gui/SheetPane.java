@@ -97,7 +97,6 @@ public class SheetPane extends Pane {
 						}
 					}
 					clickStarted = false;
-					System.out.println(String.format("onMouseReleased x=%s y=%s", event.getX(), event.getY()));
 				}
 			}
 		});
@@ -115,7 +114,7 @@ public class SheetPane extends Pane {
 
 	private boolean spaceBlocked(MidiRollKey key, int height, int startTime, int endTime) {
 		return height == key.getHeight() && key.getTime() <= endTime
-				&& key.getTime() + microtonalFile.getNotes().get(key) >= startTime;
+				&& key.getTime() + microtonalFile.getNotes().get(key) - 1 >= startTime;
 	}
 
 	private int getHeightFromY(double y) {

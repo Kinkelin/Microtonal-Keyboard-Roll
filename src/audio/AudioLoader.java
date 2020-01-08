@@ -12,20 +12,12 @@ public class AudioLoader {
 
 		Platform.runLater(() -> {
 			LoadingScreen loadingScreen = new LoadingScreen(microtonalFile);
-			loadingScreen.progressProperty()
-					.bind(generator.progressProperty().divide((double) generator.getNumberOfAudioFiles()));
-			generator.finishedProperty().addListener((observ, old, neww) -> {
-				if (neww) {
-					Platform.runLater(() -> loadingScreen.postFinish());
-				}
-			});
-
-			String format = "%s/" + generator.getNumberOfAudioFiles();
-			loadingScreen.textProperty().bind(generator.progressProperty().asString(format));
-			loadingScreen.show();
+			loadingScreen.bindGenerator(generator);
 		});
 
-		generator.setSuccessor(postFinish);
+		if (postFinish != null) {
+			generator.addSuccessor(() -> postFinish.start());
+		}
 		generator.start();
 	}
 }
